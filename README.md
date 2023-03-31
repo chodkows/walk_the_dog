@@ -4,6 +4,11 @@
 npm install
 ```
 
+## Fix ssl error
+```sh
+export NODE_OPTIONS=--openssl-legacy-provider
+```
+
 ## How to run in debug mode
 
 ```sh

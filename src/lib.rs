@@ -37,12 +37,26 @@ pub fn main_js() -> Result<(), JsValue> {
     context.line_to(300.0, 0.0);
     context.close_path();
     context.stroke();
-    sierpinski(
-        &context,
-        [(300.0, 0.0), (0.0, 600.0), (600.0, 600.0)],
-        (0, 255, 0),
-        5,
-    );
+
+    wasm_bindgen_futures::spawn_local(async move {
+        let (success_tx, success_rx) = futures::channel::oneshot::channel::<()>();
+        let image = web_sys::HtmlImageElement::new().unwrap();
+        let callback = Closure::once(move || {
+            success_tx.send(());
+        });
+        image.set_onload(Some(callback.as_ref().unchecked_ref()));
+        callback.forget();
+        image.set_src("rhg.png");
+        success_rx.await;
+        context.draw_image_with_html_image_element(&image, 0.0, 0.0);
+
+        sierpinski(
+            &context,
+            [(300.0, 0.0), (0.0, 600.0), (600.0, 600.0)],
+            (0, 255, 0),
+            5,
+        );
+    });
     Ok(())
 }
 
