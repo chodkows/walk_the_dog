@@ -2,10 +2,6 @@
 mod browser;
 mod engine;
 
-use std::rc::Rc;
-use std::sync::Mutex;
-
-use rand::prelude::*;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
@@ -82,6 +78,7 @@ pub fn main_js() -> Result<(), JsValue> {
             );
         interval_callback.forget();
     });
+
     Ok(())
 }
 
